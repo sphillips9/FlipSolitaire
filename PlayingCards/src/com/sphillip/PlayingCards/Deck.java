@@ -34,6 +34,7 @@ public class Deck {
 	 * Creates a randomized traditional card deck.
 	 */
 	public void shuffle() {
+		mCards.clear();
 		List<Card> deck = new ArrayList<>();
 		populateDeck(deck);
 		

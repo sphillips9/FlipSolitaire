@@ -50,6 +50,25 @@ public class Card {
 		return builder.toString();
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Card)) {
+			return false;
+		}
+		
+		Card card = (Card)obj;
+		
+		if (this.getSuit() != card.getSuit()) {
+			return false;
+		}
+		
+		if (this.getSymbol() != card.getSymbol()) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public static  boolean doesColorAlternate(Card card1, Card card2) {
 		if (card1.getSuit() == Suit.HEART || card1.getSuit() == Suit.DIAMOND) {
 			if (card2.getSuit() == Suit.SPADE || card2.getSuit() == Suit.CLUB) {

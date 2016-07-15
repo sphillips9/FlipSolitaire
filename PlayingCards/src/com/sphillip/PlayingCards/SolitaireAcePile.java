@@ -10,11 +10,7 @@ import com.sphillip.PlayingCards.Card.Symbol;
  */
 public class SolitaireAcePile {
 	
-	/**
-	 * @param suit Piles can only contain 1 suit.
-	 */
-	public SolitaireAcePile(Suit suit) {
-		mSuit = suit;
+	public SolitaireAcePile() {
 		mDiscard = new Stack<>();
 	}
 	
@@ -33,6 +29,9 @@ public class SolitaireAcePile {
 	 * Will return false if the card cannot be added to the stack.  Will return true if card successfully added to stack.
 	 */
 	public boolean addToStack(Card card) {
+		if (mSuit == null) {
+			mSuit = card.getSuit();
+		}
 		if (mSuit != card.getSuit()) {
 			return false;
 		}
@@ -51,6 +50,6 @@ public class SolitaireAcePile {
 		return false;
 	}
 	
-	private final Suit mSuit;
+	private Suit mSuit;
 	private final Stack<Card> mDiscard;
 }

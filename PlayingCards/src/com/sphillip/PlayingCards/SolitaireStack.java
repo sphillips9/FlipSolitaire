@@ -1,6 +1,7 @@
 package com.sphillip.PlayingCards;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,14 +16,20 @@ import com.sphillip.PlayingCards.Card.Suit;
  */
 public class SolitaireStack {
 	
-	public SolitaireStack(List<Card> cards) {
+	public SolitaireStack() {
 		mHidden = new Stack<>();
 		mPublic = new ArrayList<>();
 		mPreviousNdx = -1;
 		
 		//TODO: Verify this works as intended with a Stack using an ArrayList backing.
-		mHidden.addAll(cards);
 		transferFromHidden();
+	}
+	
+	/**
+	 * @return returns a list of cards that are on top of the hidden stack.
+	 */
+	public List<Card> getVisibleCards() {
+		return Collections.unmodifiableList(mPublic);
 	}
 	
 	/**
@@ -33,6 +40,13 @@ public class SolitaireStack {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setupStack(List<Card> cards) {
+		for (int i = 0; i < cards.size(); i++) {
+			mHidden.add(cards.get(i));
+		}
+		transferFromHidden();
 	}
 	
 	/**
@@ -67,7 +81,7 @@ public class SolitaireStack {
 		if (partialStack == null || partialStack.size() <= 0) {
 			return false;
 		}
-		if (mPublic.size() <= 0) {
+		if (mPublic.size() == 0) {
 			mPublic.addAll(partialStack);
 			return true;
 		}
@@ -76,10 +90,40 @@ public class SolitaireStack {
 		if (topPublicCard.getSymbolValue() == partialStack.get(0).getSymbolValue() + 1) {
 			if (Card.doesColorAlternate(topPublicCard, partialStack.get(0))) {
 				mPublic.addAll(partialStack);
+				return true;
 			}
 		}
 		
 		return false;
+	}
+	
+	public boolean addCard(Card card) {
+		if (card == null) {
+			return false;
+		}
+		if (mPublic.size() == 0) {
+			mPublic.add(card);
+			return true;
+		}
+		
+		Card topCard = mPublic.get(mPublic.size() - 1);
+		if (topCard.getSymbolValue() == card.getSymbolValue() + 1) {
+			if (Card.doesColorAlternate(topCard, card)) {
+				mPublic.add(topCard);
+			}
+		}
+		
+		return true;
+	}
+	
+	public boolean removeTopCard() {
+		if (mPublic.size() <= 0) {
+			return false;
+		}
+		
+		mPublic.remove(mPublic.size() - 1);
+		transferFromHidden();
+		return true;
 	}
 	
 	/**
@@ -97,13 +141,25 @@ public class SolitaireStack {
 		
 		Card bottomPublicCard = mPublic.get(0);
 		if (Card.doesColorAlternate(card, bottomPublicCard)) {
-			if (bottomPublicCard.getSymbolValue() - 1 == card.getSymbolValue()) {
+			if (bottomPublicCard.getSymbolValue() + 1 == card.getSymbolValue()) {
 				mPublic.add(0, card);
 				return true;
 			}
 		}
 		
 		return false;
+	}
+	
+	public int publicSize() {
+		return mPublic.size();
+	}
+	
+	public int hiddenSize() {
+		return mHidden.size();
+	}
+	
+	public int totalSize() {
+		return mPublic.size() + mHidden.size() - 2;
 	}
 	
 	private void transferFromHidden() {
@@ -113,7 +169,6 @@ public class SolitaireStack {
 	}
 	
 	private int mPreviousNdx;
-	
 	private Stack<Card> mHidden;
 	private List<Card> mPublic;
 }
